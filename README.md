@@ -14,7 +14,8 @@ Once I've finished to write basic logic on command line I'll start making the GU
 
 ## How to execute
 clone the repo, then exec the following commands:
-` cd <dest dir>
+```console
+  cd <dest dir>
   npm i typescript --save-dev
   npx tsc
-  node ./build/index.js `
+  node ./build/index.js ```
