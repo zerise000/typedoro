@@ -1,8 +1,15 @@
+const sleep = require('sleep');
+const argv = require('minimist')(process.argv.slice(2));
+
 class Time{
 	private seconds: number;
 
 	public constructor(hours:number,minutes:number,seconds:number){
 		this.seconds = hours*3600 + minutes*60 + seconds;
+	}
+
+	public getSeconds(): number {
+		return this.seconds;
 	}
 
 	public update(): boolean{
@@ -18,31 +25,48 @@ class Time{
 		let minutes_left: number= Math.floor(this.seconds/60);
 		let seconds_left: number = this.seconds % 60;
 
-		console.log("%d:%d:%d left",hours_left,minutes_left,seconds_left);
+		console.log("time left: %d:%d:%d",hours_left,minutes_left,seconds_left);
 	}
 }
 
-async function delay(ms:number):Promise<void>{
-	return new Promise((resolve) => {
-		setTimeout(resolve,ms);
-	});
-}
 
-async function countdown(t:Time){
-
+function countdown(timer:Time,final_msg:string){
 	do {
 		console.clear();
-		t.print();
-		await delay(1000);
-	}while(t.update());
+		console.log(final_msg);
 
-	
-	console.log("counter expired");
+		timer.print();
+		sleep.sleep(1);
+	}while(timer.update());
 }
 
 function main(){
-	const t = new Time(0,0,3);
-	countdown(t);	
+
+	console.log(argv);
+
+	let sessions = [
+		[new Time(0,20,0),new Time(0,5,0)],
+		[new Time(0,20,0),new Time(0,5,0)],
+		[new Time(0,20,0),new Time(0,20,0)]
+	];
+
+	if(argv['schedule'] !== undefined){
+		let sessions = [
+			[new Time(0,5,0),new Time(0,5,0)],
+			[new Time(0,5,0),new Time(0,5,0)],
+			[new Time(0,5,0),new Time(0,5,0)]
+		]
+	}
+
+	
+
+	sessions.forEach((single_session)=>{
+		countdown(single_session[0],"\x1b[0;31mstudy session\x1b[0m");
+		countdown(single_session[1],"\x1b[0;32mtimebreak\x1b[0m");
+	});
+
+
+	console.log("\x1b[0;33mthere are no more study sessions, you can stop now\x1b[0m");
 }
 
 main();
